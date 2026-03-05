@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Οικ. Προϋπολογισμός">
+<title>Οικογενειακός Προϋπολογισμός</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F4F1EC; --white:#FFF; --navy:#1B3A5C; --teal:#167A6A;
+  --red:#B91C1C; --amber:#B45309; --text:#111827;
+  --mid:#4B5563; --muted:#9CA3AF; --border:#DDD8D0; --r:18px;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:100px}
+.notch{height:env(safe-area-inset-top,44px);background:var(--navy)}
+
+/* HEADER */
+.hdr{background:var(--navy);padding:18px 20px 42px;position:relative;overflow:hidden}
+.hdr::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;
+  border-radius:50%;background:rgba(255,255,255,0.05)}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.mnav{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);
+  border-radius:99px;padding:5px 12px}
+.mnav button{background:none;border:none;color:white;font-size:22px;cursor:pointer;line-height:1;padding:0 2px}
+.mnav span{font-size:13px;font-weight:800;color:white;min-width:120px;text-align:center}
+.ico-btn{background:rgba(255,255,255,0.1);border:none;color:white;width:38px;height:38px;
+  border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.bal-block{text-align:center}
+.bal-tag{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(255,255,255,0.45);margin-bottom:6px}
+.bal-num{font-size:54px;font-weight:900;color:white;line-height:1;letter-spacing:-2px;margin-bottom:6px}
+.bal-sub{font-size:12px;color:rgba(255,255,255,0.45);line-height:1.6}
+
+/* PROGRESS CARD */
+.prog-card{margin:-22px 14px 0;background:var(--white);border-radius:var(--r);
+  padding:16px 18px;box-shadow:0 6px 24px rgba(0,0,0,0.1);position:relative;z-index:2}
+.prog-row{display:flex;justify-content:space-between;font-size:12px;font-weight:800;
+  color:var(--mid);margin-bottom:9px}
+.prog-track{height:13px;background:var(--bg);border-radius:99px;overflow:hidden;border:1px solid var(--border)}
+.prog-fill{height:100%;border-radius:99px;background:var(--teal);
+  transition:width .7s cubic-bezier(.34,1.56,.64,1)}
+.prog-fill.warn{background:var(--amber)}.prog-fill.over{background:var(--red)}
+.status-pill{margin:10px 0 0;padding:7px 14px;border-radius:99px;
+  font-size:12px;font-weight:800;text-align:center}
+
+/* INCOME SUMMARY */
+.inc-summary{margin:14px 14px 0;background:var(--white);border-radius:var(--r);
+  padding:14px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06)}
+.inc-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px}
+.inc-row{display:flex;justify-content:space-between;align-items:center;
+  padding:5px 0;border-bottom:1px solid var(--border)}
+.inc-row:last-child{border-bottom:none;padding-top:8px;margin-top:2px}
+.inc-lbl{font-size:13px;font-weight:600;color:var(--mid)}
+.inc-amt{font-size:13px;font-weight:800;color:var(--teal)}
+.inc-total-lbl{font-size:13px;font-weight:800;color:var(--navy)}
+.inc-total-amt{font-size:15px;font-weight:900;color:var(--navy)}
+
+/* SECTIONS */
+.sec{padding:18px 14px 0}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;padding:0 2px}
+
+/* CARD */
+.card{background:var(--white);border-radius:var(--r);
+  box-shadow:0 2px 14px rgba(0,0,0,0.06);overflow:hidden}
+.card-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border)}
+.card-row:last-child{border-bottom:none}
+.total-row{background:var(--bg)}
+.eico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;
+  justify-content:center;font-size:19px;flex-shrink:0}
+.rinfo{flex:1;min-width:0}
+.rname{font-size:14px;font-weight:700}
+.rsub{font-size:11px;color:var(--muted);margin-top:2px}
+.ramt{font-size:14px;font-weight:800;flex-shrink:0}
+.c-teal{color:var(--teal)}.c-red{color:var(--red)}.c-dim{color:var(--mid)}.c-navy{color:var(--navy)}
+.mbar{height:5px;background:var(--bg);border-radius:99px;overflow:hidden;margin-top:5px}
+.mbar-f{height:100%;border-radius:99px;transition:width .5s}
+
+/* GROUP HEADER inside card */
+.grp-hdr{background:var(--bg);padding:7px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center}
+.grp-lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.grp-tot{margin-left:auto;font-size:12px;font-weight:800;color:var(--navy)}
+
+/* FAB */
+.fab{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom,0px));right:18px;
+  width:62px;height:62px;border-radius:50%;background:var(--navy);color:white;
+  border:none;font-size:32px;cursor:pointer;
+  box-shadow:0 6px 28px rgba(27,58,92,0.38);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .15s;z-index:50}
+.fab:active{transform:scale(0.9)}
+
+/* TRANSACTIONS */
+.txn-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.txn-row:last-child{border-bottom:none}
+.txn-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;
+  justify-content:center;font-size:17px;flex-shrink:0}
+.txn-info{flex:1;min-width:0}
+.txn-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.txn-meta{font-size:11px;color:var(--muted);margin-top:1px}
+.txn-amt{font-size:14px;font-weight:800;color:var(--red);flex-shrink:0}
+.txn-del{background:none;border:none;color:var(--border);font-size:16px;cursor:pointer;padding:4px;transition:color .15s}
+.txn-del:active{color:var(--red)}
+
+/* EMPTY */
+.empty{padding:28px;text-align:center;color:var(--muted);font-size:14px;font-weight:700}
+.empty .ei{font-size:36px;margin-bottom:10px}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--white);
+  border-top:1px solid var(--border);display:flex;
+  padding-bottom:env(safe-area-inset-bottom,10px);
+  box-shadow:0 -4px 24px rgba(0,0,0,0.07);z-index:100}
+.nb{flex:1;background:none;border:none;display:flex;flex-direction:column;
+  align-items:center;padding:10px 0 2px;gap:3px;cursor:pointer;
+  color:var(--muted);font-size:10px;font-weight:800;
+  font-family:'Nunito',sans-serif;transition:color .15s}
+.nb .ni{font-size:22px}
+.nb.on{color:var(--navy)}
+
+/* OVERLAY / SHEET */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.52);
+  z-index:200;align-items:flex-end}
+.ov.open{display:flex}
+.sheet{width:100%;background:var(--white);border-radius:26px 26px 0 0;
+  padding-bottom:env(safe-area-inset-bottom,20px);
+  animation:sup .32s cubic-bezier(.34,1.56,.64,1)}
+@keyframes sup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sh{width:44px;height:5px;background:var(--border);border-radius:99px;margin:14px auto 18px}
+.stitle{font-size:20px;font-weight:900;color:var(--navy);text-align:center;margin-bottom:18px;padding:0 20px}
+.sbody{padding:0 20px}
+.flbl{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:7px}
+.finp{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:13px;
+  padding:13px 15px;font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;
+  color:var(--text);margin-bottom:14px;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.finp:focus{border-color:var(--navy)}
+.finp.amt{font-size:32px;font-weight:900;color:var(--navy);text-align:center;letter-spacing:-1px}
+.finp.err{border-color:var(--red)!important;animation:shk .3s}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chip{display:flex;align-items:center;gap:5px;padding:8px 13px;border-radius:99px;
+  border:2px solid var(--border);background:var(--white);font-family:'Nunito',sans-serif;
+  font-size:12px;font-weight:800;cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip.on{background:var(--navy);border-color:var(--navy);color:white}
+.sbtns{display:flex;gap:10px;padding:4px 20px 8px}
+.bcn{flex:1;padding:14px;border-radius:15px;border:2px solid var(--border);background:var(--white);
+  font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:var(--mid);cursor:pointer}
+.bsv{flex:2;padding:14px;border-radius:15px;border:none;background:var(--navy);
+  font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;color:white;cursor:pointer;
+  box-shadow:0 4px 16px rgba(27,58,92,.3)}
+.bsv:active{transform:scale(0.97)}
+
+/* SETUP */
+.srow{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.srow:last-child{border-bottom:none}
+.sico{width:36px;height:36px;border-radius:10px;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sinp{flex:1;border:none;background:transparent;font-family:'Nunito',sans-serif;
+  font-size:14px;font-weight:700;color:var(--text);outline:none}
+.samt{width:100px;border:2px solid var(--border);border-radius:10px;padding:7px 10px;
+  font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;text-align:right;
+  outline:none;background:var(--bg);color:var(--text);-webkit-appearance:none}
+.samt:focus{border-color:var(--navy)}
+.dbtn{background:none;border:none;color:var(--muted);font-size:17px;cursor:pointer;padding:2px 0 2px 4px}
+.add-dash{width:100%;padding:13px;border-radius:var(--r);border:2px dashed var(--border);background:none;
+  font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;margin-top:8px}
+.add-dash:active{border-color:var(--navy);color:var(--navy)}
+.back-btn{background:rgba(255,255,255,0.12);border:none;color:white;padding:8px 18px;
+  border-radius:99px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer}
+.snote{font-size:11px;color:var(--muted);margin:7px 2px 0;font-weight:600;line-height:1.5}
+
+.view{display:none}.view.on{display:block}
+</style>
+</head>
+<body>
+
+<div class="notch"></div>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div class="view on" id="v-home">
+
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="mnav">
+        <button onclick="goMonth(-1)">‹</button>
+        <span id="mlbl"></span>
+        <button onclick="goMonth(1)">›</button>
+      </div>
+      <button class="ico-btn" onclick="sv('setup')">⚙️</button>
+    </div>
+    <div class="bal-block">
+      <div class="bal-tag">Τι μένει αυτόν τον μήνα</div>
+      <div class="bal-num" id="bal-num">€0</div>
+      <div class="bal-sub" id="bal-sub"></div>
+    </div>
+  </div>
+
+  <div class="prog-card">
+    <div class="prog-row">
+      <span>Προϋπολογισμός που χρησιμοποιήθηκε</span>
+      <span id="ppct">0%</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="pfill" style="width:0%"></div></div>
+    <div class="status-pill" id="spill"></div>
+  </div>
+
+  <div class="inc-summary">
+    <div class="inc-title">Εισοδήματα μήνα</div>
+    <div id="inc-rows"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Σταθερά έξοδα</div>
+    <div class="card" id="fcard"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Μεταβλητά / Έκτακτα έξοδα</div>
+    <div class="card" id="vcard"></div>
+  </div>
+
+  <div class="sec" style="padding-top:16px">
+    <div class="sec-label">Πρόσφατες καταχωρίσεις</div>
+    <div class="card" id="rcard"></div>
+  </div>
+
+</div>
+
+<!-- ══════════════ SETUP ══════════════ -->
+<div class="view" id="v-setup">
+
+  <div class="hdr" style="padding-bottom:24px">
+    <div class="hdr-top">
+      <button class="back-btn" onclick="sv('home')">‹ Πίσω</button>
+      <span style="color:white;font-size:16px;font-weight:900">Ρυθμίσεις</span>
+      <div style="width:72px"></div>
+    </div>
+  </div>
+
+  <!-- INCOME -->
+  <div class="sec" style="margin-top:14px">
+    <div class="sec-label">Εισοδήματα</div>
+    <div class="card">
+      <div class="srow"><div class="sico">👩‍💼</div>
+        <span class="sinp" style="pointer-events:none">Μισθός Άγγελα</span>
+        <input class="samt" type="number" id="inc-angela" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">👨‍💼</div>
+        <span class="sinp" style="pointer-events:none">Μισθός Γιώργος</span>
+        <input class="samt" type="number" id="inc-george" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">🏛️</div>
+        <span class="sinp" style="pointer-events:none">Σύνταξη Γιώργος</span>
+        <input class="samt" type="number" id="inc-pension" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">🏠</div>
+        <span class="sinp" style="pointer-events:none">Ενοίκιο σπιτιού Αθήνα</span>
+        <input class="samt" type="number" id="inc-rent" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+    </div>
+  </div>
+
+  <!-- INSURANCE -->
+  <div class="sec">
+    <div class="sec-label">Ασφάλεια</div>
+    <div class="card">
+      <div class="srow"><div class="sico">🛡️</div>
+        <span class="sinp" style="pointer-events:none">Ασφάλεια οικογένειας</span>
+        <input class="samt" type="number" id="f-insurance" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+    </div>
+  </div>
+
+  <!-- DESPOINA -->
+  <div class="sec">
+    <div class="sec-label">Δέσποινα — Βουλγαρία</div>
+    <div class="card">
+      <div class="srow"><div class="sico">🎓</div>
+        <span class="sinp" style="pointer-events:none">Έξοδα ζωής Δέσποινα</span>
+        <input class="samt" type="number" id="f-desp-living" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">🏘️</div>
+        <span class="sinp" style="pointer-events:none">Ενοίκιο Δέσποινα</span>
+        <input class="samt" type="number" id="f-desp-rent" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">💡</div>
+        <span class="sinp" style="pointer-events:none">Νερό &amp; ρεύμα Δέσποινα</span>
+        <input class="samt" type="number" id="f-desp-bills" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+    </div>
+  </div>
+
+  <!-- PSYCHOLOGISTS -->
+  <div class="sec">
+    <div class="sec-label">Ψυχολόγοι</div>
+    <div class="card">
+      <div class="srow"><div class="sico">🧠</div>
+        <span class="sinp" style="pointer-events:none">Ψυχολόγος Άγγελα</span>
+        <input class="samt" type="number" id="f-psy-angela" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">🧠</div>
+        <span class="sinp" style="pointer-events:none">Ψυχολόγος Γιώργος</span>
+        <input class="samt" type="number" id="f-psy-george" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">🧠</div>
+        <span class="sinp" style="pointer-events:none">Ψυχολόγος Λουίζα</span>
+        <input class="samt" type="number" id="f-psy-louiza" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">🧠</div>
+        <span class="sinp" style="pointer-events:none">Ψυχολόγος Δέσποινα</span>
+        <input class="samt" type="number" id="f-psy-desp" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONES -->
+  <div class="sec">
+    <div class="sec-label">Κινητά τηλέφωνα</div>
+    <div class="card">
+      <div class="srow"><div class="sico">📱</div>
+        <span class="sinp" style="pointer-events:none">Κινητό Άγγελα</span>
+        <input class="samt" type="number" id="f-phone-angela" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">📱</div>
+        <span class="sinp" style="pointer-events:none">Κινητό Γιώργος</span>
+        <input class="samt" type="number" id="f-phone-george" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">📱</div>
+        <span class="sinp" style="pointer-events:none">Κινητό Λουίζα</span>
+        <input class="samt" type="number" id="f-phone-louiza" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">📱</div>
+        <span class="sinp" style="pointer-events:none">Κινητό Δέσποινα</span>
+        <input class="samt" type="number" id="f-phone-desp" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+    </div>
+  </div>
+
+  <!-- HEALTH -->
+  <div class="sec">
+    <div class="sec-label">Υγεία</div>
+    <div class="card">
+      <div class="srow"><div class="sico">🌿</div>
+        <span class="sinp" style="pointer-events:none">Ομοιοπαθητικός γιατρός</span>
+        <input class="samt" type="number" id="f-homeo" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+      <div class="srow"><div class="sico">💊</div>
+        <span class="sinp" style="pointer-events:none">Φάρμακα</span>
+        <input class="samt" type="number" id="f-meds" placeholder="€0" inputmode="decimal" oninput="saveSetup()">
+      </div>
+    </div>
+  </div>
+
+  <!-- EXTRA FIXED -->
+  <div class="sec">
+    <div class="sec-label">Άλλα σταθερά έξοδα</div>
+    <div class="card" id="extra-list"></div>
+    <button class="add-dash" onclick="addExtra()">＋ Πρόσθεσε σταθερό έξοδο</button>
+    <p class="snote">π.χ. Netflix, ασφάλεια αυτοκινήτου, δάνειο…</p>
+  </div>
+
+  <!-- VARIABLE LIMITS -->
+  <div class="sec">
+    <div class="sec-label">Μηνιαία όρια μεταβλητών (προαιρετικό)</div>
+    <div class="card" id="lim-card"></div>
+    <p class="snote">Άφησε κενό αν δεν θέλεις όριο.</p>
+  </div>
+
+  <div style="height:32px"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="nb on" id="nb-home"  onclick="sv('home')"><span class="ni">🏠</span>Αρχική</button>
+  <button class="nb"    id="nb-setup" onclick="sv('setup')"><span class="ni">⚙️</span>Ρυθμίσεις</button>
+</nav>
+
+<button class="fab" onclick="openAdd()">＋</button>
+
+<!-- ADD SHEET -->
+<div class="ov" id="add-ov" onclick="bgClose(event)">
+  <div class="sheet">
+    <div class="sh"></div>
+    <div class="stitle">Προσθήκη Εξόδου</div>
+    <div class="sbody">
+      <div class="flbl">Ποσό (€)</div>
+      <input class="finp amt" id="e-amt" type="number" step="0.01" placeholder="0.00" inputmode="decimal">
+      <div class="flbl">Τι ήταν;</div>
+      <input class="finp" id="e-desc" type="text" placeholder="π.χ. Σούπερ μάρκετ" autocomplete="off" autocorrect="off">
+      <div class="flbl">Κατηγορία</div>
+      <div class="chips" id="e-chips"></div>
+    </div>
+    <div class="sbtns">
+      <button class="bcn" onclick="closeAdd()">Άκυρο</button>
+      <button class="bsv" onclick="saveExp()">Αποθήκευση ✓</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CATEGORIES (6 variable) ───────────────────────────────
+const CATS = [
+  { id:'food',    label:'Εστιατόρια',           emoji:'🍽️', bg:'#FEF9C3', bar:'#CA8A04' },
+  { id:'super',   label:'Σούπερ μάρκετ',        emoji:'🛒', bg:'#DCFCE7', bar:'#16A34A' },
+  { id:'petrol',  label:'Βενζίνη & μεταφορές',  emoji:'⛽', bg:'#FEF3C7', bar:'#D97706' },
+  { id:'shop',    label:'Ψώνια & ρούχα',         emoji:'🛍️', bg:'#EDE9FE', bar:'#7C3AED' },
+  { id:'fun',     label:'Διασκέδαση',            emoji:'🎉', bg:'#FCE7F3', bar:'#BE185D' },
+  { id:'other',   label:'Άλλο',                  emoji:'📦', bg:'#F3F4F6', bar:'#4B5563' },
+];
+
+const MONTHS = ['Ιανουάριος','Φεβρουάριος','Μάρτιος','Απρίλιος','Μάιος','Ιούνιος',
+                'Ιούλιος','Αύγουστος','Σεπτέμβριος','Οκτώβριος','Νοέμβριος','Δεκέμβριος'];
+
+// ── INCOME FIELDS ─────────────────────────────────────────
+const INC = [
+  { id:'inc-angela',  label:'Μισθός Άγγελα',         emoji:'👩‍💼' },
+  { id:'inc-george',  label:'Μισθός Γιώργος',         emoji:'👨‍💼' },
+  { id:'inc-pension', label:'Σύνταξη Γιώργος',        emoji:'🏛️' },
+  { id:'inc-rent',    label:'Ενοίκιο σπιτιού Αθήνα',  emoji:'🏠' },
+];
+
+// ── FIXED EXPENSE FIELDS (grouped) ────────────────────────
+const FIXED = [
+  { id:'f-insurance',    label:'Ασφάλεια οικογένειας',  group:'🛡️ Ασφάλεια',              emoji:'🛡️' },
+  { id:'f-desp-living',  label:'Έξοδα ζωής Δέσποινα',  group:'🎓 Δέσποινα (Βουλγαρία)',   emoji:'🎓' },
+  { id:'f-desp-rent',    label:'Ενοίκιο Δέσποινα',      group:'🎓 Δέσποινα (Βουλγαρία)',   emoji:'🏘️' },
+  { id:'f-desp-bills',   label:'Νερό & ρεύμα Δέσποινα', group:'🎓 Δέσποινα (Βουλγαρία)',  emoji:'💡' },
+  { id:'f-psy-angela',   label:'Ψυχολόγος Άγγελα',      group:'🧠 Ψυχολόγοι',              emoji:'🧠' },
+  { id:'f-psy-george',   label:'Ψυχολόγος Γιώργος',     group:'🧠 Ψυχολόγοι',              emoji:'🧠' },
+  { id:'f-psy-louiza',   label:'Ψυχολόγος Λουίζα',      group:'🧠 Ψυχολόγοι',              emoji:'🧠' },
+  { id:'f-psy-desp',     label:'Ψυχολόγος Δέσποινα',    group:'🧠 Ψυχολόγοι',              emoji:'🧠' },
+  { id:'f-phone-angela', label:'Κινητό Άγγελα',          group:'📱 Κινητά',                 emoji:'📱' },
+  { id:'f-phone-george', label:'Κινητό Γιώργος',         group:'📱 Κινητά',                 emoji:'📱' },
+  { id:'f-phone-louiza', label:'Κινητό Λουίζα',          group:'📱 Κινητά',                 emoji:'📱' },
+  { id:'f-phone-desp',   label:'Κινητό Δέσποινα',        group:'📱 Κινητά',                 emoji:'📱' },
+  { id:'f-homeo',        label:'Ομοιοπαθητικός γιατρός', group:'🌿 Υγεία',                  emoji:'🌿' },
+  { id:'f-meds',         label:'Φάρμακα',                group:'🌿 Υγεία',                  emoji:'💊' },
+];
+
+const EXTRA_EMOJIS = ['📺','🚗','🏦','📰','🔑','🏋️','🎵','🎬'];
+
+// ── STORAGE ───────────────────────────────────────────────
+const LS = {
+  g:(k,d=null)=>{try{const v=localStorage.getItem(k);return v!=null?JSON.parse(v):d}catch{return d}},
+  s:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}},
+};
+function cfg(){return LS.g('fam2_cfg',{income:{},fixed:{},extra:[],limits:{}});}
+function getTxns(m){return LS.g('fam2_t_'+m,[]);}
+function setTxns(m,a){LS.s('fam2_t_'+m,a);}
+
+// ── FORMAT ────────────────────────────────────────────────
+function fe(n,d=0){
+  return '€'+Math.abs(n).toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+}
+
+// ── MONTH ─────────────────────────────────────────────────
+let CM='';
+function goMonth(dir){
+  const [y,m]=CM.split('-').map(Number);
+  const dt=new Date(y,m-1+dir,1);
+  CM=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');
+  LS.s('fam2_m',CM);renderHome();
+}
+
+// ── RENDER HOME ───────────────────────────────────────────
+function renderHome(){
+  const c=cfg(), txs=getTxns(CM);
+  const [y,m]=CM.split('-').map(Number);
+  document.getElementById('mlbl').textContent=MONTHS[m-1]+' '+y;
+
+  const totalInc  = INC.reduce((a,f)=>a+(Number(c.income[f.id])||0),0);
+  const fixedTot  = FIXED.reduce((a,f)=>a+(Number(c.fixed[f.id])||0),0)
+                  + (c.extra||[]).reduce((a,e)=>a+(Number(e.amt)||0),0);
+  const varTot    = txs.reduce((a,t)=>a+Number(t.amt),0);
+  const spent     = fixedTot + varTot;
+  const left      = totalInc - spent;
+  const pct       = totalInc>0 ? Math.min(spent/totalInc*100,100) : 0;
+
+  // balance
+  const bn=document.getElementById('bal-num');
+  bn.textContent=fe(left);
+  bn.style.color=left<0?'#FCA5A5':left<totalInc*0.1?'#FDE68A':'white';
+  document.getElementById('bal-sub').textContent=totalInc>0
+    ? fe(spent)+' έξοδα  ·  '+fe(totalInc)+' εισόδημα'
+    : 'Πάτα ⚙️ Ρυθμίσεις για να ξεκινήσεις';
+
+  // progress
+  const fill=document.getElementById('pfill');
+  fill.style.width=pct+'%';
+  fill.className='prog-fill'+(pct>=90?' over':pct>=70?' warn':'');
+  document.getElementById('ppct').textContent=Math.round(pct)+'%';
+
+  const pill=document.getElementById('spill');
+  const dl=daysLeft();
+  if(left<0){
+    pill.textContent='⚠️  Υπέρβαση κατά '+fe(-left);
+    pill.style.cssText='background:#FEE2E2;color:#7F1D1D;border-radius:99px;padding:7px 14px;font-size:12px;font-weight:800;text-align:center';
+  } else if(pct>=70){
+    pill.textContent='⚡  Απομένουν '+fe(left)+' — '+dl+' μέρες ακόμα';
+    pill.style.cssText='background:#FEF3C7;color:#92400E;border-radius:99px;padding:7px 14px;font-size:12px;font-weight:800;text-align:center';
+  } else {
+    pill.textContent='✅  Καλά πάμε — '+dl+' μέρες απομένουν';
+    pill.style.cssText='background:#DCFCE7;color:#166534;border-radius:99px;padding:7px 14px;font-size:12px;font-weight:800;text-align:center';
+  }
+
+  // income rows
+  document.getElementById('inc-rows').innerHTML=
+    INC.map(f=>`
+      <div class="inc-row">
+        <span class="inc-lbl">${f.emoji} ${f.label}</span>
+        <span class="inc-amt">${fe(Number(c.income[f.id])||0)}</span>
+      </div>`).join('')+
+    `<div class="inc-row">
+       <span class="inc-total-lbl">Σύνολο εισοδήματος</span>
+       <span class="inc-total-amt">${fe(totalInc)}</span>
+     </div>`;
+
+  // fixed card — grouped
+  const fc=document.getElementById('fcard');
+  const groups={}; // key = group label
+  FIXED.forEach(f=>{
+    if(!groups[f.group])groups[f.group]={items:[],total:0};
+    const v=Number(c.fixed[f.id])||0;
+    groups[f.group].items.push({...f,val:v});
+    groups[f.group].total+=v;
+  });
+  // extra fixed
+  const extras=c.extra||[];
+  if(extras.length){
+    groups['➕ Άλλα']={items:extras.map(e=>({label:e.name,emoji:e.emoji||'📋',val:Number(e.amt)||0})),
+      total:extras.reduce((a,e)=>a+(Number(e.amt)||0),0)};
+  }
+
+  let fcH='';
+  for(const [grp,data] of Object.entries(groups)){
+    fcH+=`<div class="grp-hdr"><span class="grp-lbl">${grp}</span><span class="grp-tot">${fe(data.total)}</span></div>`;
+    data.items.forEach(it=>{
+      fcH+=`<div class="card-row">
+        <div class="eico" style="background:#EEF4FB">${it.emoji}</div>
+        <div class="rinfo"><div class="rname">${it.label}</div></div>
+        <div class="ramt c-dim">${it.val>0?fe(it.val):'—'}</div>
+      </div>`;
+    });
+  }
+  fcH+=`<div class="card-row total-row">
+    <div class="rinfo"><div class="rsub" style="font-weight:800;color:var(--mid)">Σύνολο σταθερών</div></div>
+    <div class="ramt c-navy">${fe(fixedTot)}</div>
+  </div>`;
+  fc.innerHTML=fcH||'<div class="empty"><div class="ei">📋</div>Συμπλήρωσε τα σταθερά στις ⚙️ Ρυθμίσεις</div>';
+
+  // variable card
+  const tots={};CATS.forEach(ct=>tots[ct.id]=0);
+  txs.forEach(t=>{if(tots[t.cat]!==undefined)tots[t.cat]+=Number(t.amt);});
+  document.getElementById('vcard').innerHTML=CATS.map(cat=>{
+    const tot=tots[cat.id]||0, lim=Number(c.limits?.[cat.id])||0;
+    const pp=lim>0?Math.min(tot/lim*100,100):0;
+    const bc=pp>=90?'#B91C1C':pp>=70?'#D97706':cat.bar;
+    const sub=lim>0?`<div class="mbar"><div class="mbar-f" style="width:${pp}%;background:${bc}"></div></div>
+      <div class="rsub">${fe(lim-tot)} απομένουν από ${fe(lim)}</div>`:'';
+    return `<div class="card-row">
+      <div class="eico" style="background:${cat.bg}">${cat.emoji}</div>
+      <div class="rinfo"><div class="rname">${cat.label}</div>${sub}</div>
+      <div class="ramt ${tot>0?'c-red':'c-dim'}">${tot>0?fe(tot):'<span style="color:var(--border)">—</span>'}</div>
+    </div>`;
+  }).join('')+
+  `<div class="card-row total-row">
+    <div class="rinfo"><div class="rsub" style="font-weight:800;color:var(--mid)">Σύνολο μεταβλητών</div></div>
+    <div class="ramt c-red">${fe(varTot)}</div>
+  </div>`;
+
+  // recent
+  const rc=document.getElementById('rcard');
+  if(!txs.length){
+    rc.innerHTML='<div class="empty"><div class="ei">🧾</div>Δεν υπάρχουν έξοδα ακόμα.<br>Πάτα <b>＋</b> για να καταχωρίσεις ένα!</div>';
+  } else {
+    rc.innerHTML=[...txs].sort((a,b)=>b.ts-a.ts).slice(0,40).map(t=>{
+      const cat=CATS.find(c=>c.id===t.cat)||CATS[5];
+      const d=new Date(t.ts), ds=d.getDate()+' '+MONTHS[d.getMonth()].slice(0,3);
+      return `<div class="txn-row">
+        <div class="txn-ico" style="background:${cat.bg}">${cat.emoji}</div>
+        <div class="txn-info">
+          <div class="txn-name">${t.desc||cat.label}</div>
+          <div class="txn-meta">${ds} · ${cat.label}</div>
+        </div>
+        <div class="txn-amt">${fe(t.amt,2)}</div>
+        <button class="txn-del" onclick="delT('${t.id}')">✕</button>
+      </div>`;
+    }).join('');
+  }
+}
+
+function daysLeft(){
+  const n=new Date(),l=new Date(n.getFullYear(),n.getMonth()+1,0);
+  return l.getDate()-n.getDate();
+}
+
+// ── ADD EXPENSE ───────────────────────────────────────────
+let selCat='food';
+function openAdd(){
+  document.getElementById('e-amt').value='';
+  document.getElementById('e-desc').value='';
+  document.getElementById('e-amt').classList.remove('err');
+  selCat='food';buildChips();
+  document.getElementById('add-ov').classList.add('open');
+  setTimeout(()=>document.getElementById('e-amt').focus(),350);
+}
+function closeAdd(){document.getElementById('add-ov').classList.remove('open');}
+function bgClose(e){if(e.target===document.getElementById('add-ov'))closeAdd();}
+function buildChips(){
+  document.getElementById('e-chips').innerHTML=CATS.map(c=>
+    `<div class="chip ${c.id===selCat?'on':''}" onclick="pickCat('${c.id}')">${c.emoji} ${c.label}</div>`
+  ).join('');
+}
+function pickCat(id){selCat=id;buildChips();}
+function saveExp(){
+  const amt=parseFloat(document.getElementById('e-amt').value);
+  if(!amt||amt<=0){document.getElementById('e-amt').classList.add('err');document.getElementById('e-amt').focus();return;}
+  const desc=document.getElementById('e-desc').value.trim();
+  const txs=getTxns(CM);
+  txs.push({id:Date.now().toString(),amt,desc,cat:selCat,ts:Date.now()});
+  setTxns(CM,txs);closeAdd();renderHome();
+}
+function delT(id){
+  if(!confirm('Να διαγραφεί αυτή η καταχώριση;'))return;
+  setTxns(CM,getTxns(CM).filter(t=>t.id!==id));renderHome();
+}
+
+// ── SETUP ─────────────────────────────────────────────────
+function renderSetup(){
+  const c=cfg();
+  INC.forEach(f=>{const el=document.getElementById(f.id);if(el)el.value=c.income[f.id]||'';});
+  FIXED.forEach(f=>{const el=document.getElementById(f.id);if(el)el.value=c.fixed[f.id]||'';});
+  renderExtraList(c);
+  document.getElementById('lim-card').innerHTML=CATS.map(cat=>`
+    <div class="srow">
+      <div class="sico" style="background:${cat.bg}">${cat.emoji}</div>
+      <span style="flex:1;font-size:13px;font-weight:700">${cat.label}</span>
+      <input class="samt" type="number" id="lim-${cat.id}"
+        value="${c.limits?.[cat.id]||''}" placeholder="χωρίς όριο"
+        inputmode="decimal" oninput="saveSetup()">
+    </div>`).join('');
+}
+
+function renderExtraList(c){
+  const el=document.getElementById('extra-list');
+  const list=c.extra||[];
+  el.innerHTML=list.length?list.map((e,i)=>`
+    <div class="srow">
+      <div class="sico">${e.emoji||'📋'}</div>
+      <input class="sinp" value="${e.name}" onchange="updExtra(${i},'name',this.value)" placeholder="Όνομα εξόδου">
+      <input class="samt" type="number" value="${e.amt||''}" placeholder="€0"
+             inputmode="decimal" onchange="updExtra(${i},'amt',this.value)">
+      <button class="dbtn" onclick="rmExtra(${i})">✕</button>
+    </div>`).join('')
+    :'<div class="empty" style="padding:14px;font-size:13px">Δεν υπάρχουν ακόμα</div>';
+}
+
+function saveSetup(){
+  const c=cfg();
+  INC.forEach(f=>{const el=document.getElementById(f.id);if(el){if(!c.income)c.income={};c.income[f.id]=parseFloat(el.value)||0;}});
+  FIXED.forEach(f=>{const el=document.getElementById(f.id);if(el){if(!c.fixed)c.fixed={};c.fixed[f.id]=parseFloat(el.value)||0;}});
+  CATS.forEach(cat=>{const el=document.getElementById('lim-'+cat.id);if(el){if(!c.limits)c.limits={};c.limits[cat.id]=parseFloat(el.value)||0;}});
+  LS.s('fam2_cfg',c);
+}
+
+let exctr=0;
+function addExtra(){
+  const c=cfg();if(!c.extra)c.extra=[];
+  c.extra.push({id:++exctr,name:'Νέο έξοδο',amt:0,emoji:EXTRA_EMOJIS[c.extra.length%EXTRA_EMOJIS.length]});
+  LS.s('fam2_cfg',c);renderExtraList(c);
+}
+function updExtra(i,k,v){
+  const c=cfg();c.extra[i][k]=k==='amt'?parseFloat(v)||0:v;LS.s('fam2_cfg',c);saveSetup();
+}
+function rmExtra(i){
+  const c=cfg();c.extra.splice(i,1);LS.s('fam2_cfg',c);renderExtraList(c);
+}
+
+// ── VIEWS ─────────────────────────────────────────────────
+function sv(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.getElementById('v-'+name).classList.add('on');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  const nb=document.getElementById('nb-'+name);if(nb)nb.classList.add('on');
+  window.scrollTo(0,0);
+  if(name==='home')renderHome();
+  if(name==='setup')renderSetup();
+}
+
+// ── INIT ──────────────────────────────────────────────────
+(function(){
+  const now=new Date();
+  CM=LS.g('fam2_m',now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0'));
+  if(!LS.g('fam2_cfg'))LS.s('fam2_cfg',{income:{},fixed:{},extra:[],limits:{}});
+  renderHome();
+  document.getElementById('e-desc').addEventListener('keydown',e=>{if(e.key==='Enter')saveExp();});
+  document.getElementById('e-amt').addEventListener('input',function(){this.classList.remove('err');});
+})();
+</script>
+</body>
+</html>
